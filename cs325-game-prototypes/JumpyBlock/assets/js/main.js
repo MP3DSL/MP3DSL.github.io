@@ -13,6 +13,7 @@ var space;
 var timer;
 
 //Sound effects/music
+var played = false;
 var nope;
 
 var GameState = {
@@ -86,13 +87,12 @@ var GameState = {
 				highScore = score;
 				highScoreText.text = 'High Score: ' + highScore;
 			}
-			nope.mute = false;
+			played = false;
 			timer.stop();
 		}
 		else if (space.downDuration(0.5) && !player.body.touching.down && !hitPlatform){
 			score = 0;
 			scoreText.text = 'Score: ' + score;
-			nope.mute = false;
 			nope = game.sound.play('nope');
 			timer.stop();
 		}
@@ -102,11 +102,10 @@ var GameState = {
 			timer.start();
 		}
 		else if(!space.isDown && !player.body.touching.down && !hitPlatform){
+			played = false;
 			timer.stop();
-			nope.mute = false;
 		}
 		else if(!space.downDuration(100) && space.isDown && !player.body.touching.down && !hitPlatform){
-			nope.mute = false;
 			reset();
 		}
 	}
@@ -115,8 +114,10 @@ var GameState = {
 function reset(){
 		score = 0;
 		scoreText.text = 'Score: ' + score;
-		nope = game.sound.play('nope');
-		nope.mute = true;
+		if(!played){
+			nope = game.sound.play('nope');
+			played = true;
+		}
 }
 
 game.state.add('GameState', GameState)
