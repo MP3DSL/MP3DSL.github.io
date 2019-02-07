@@ -1,7 +1,7 @@
 var game = new Phaser.Game(1000, 800, Phaser.Auto)
 
 //Scoreboard
-var score = 0;
+var score = -1;
 var highScore = 0;
 var scoreText;
 var highScoreText;
@@ -15,6 +15,7 @@ var timer;
 //Sound effects/music
 var played = false;
 var nope;
+var coin;
 
 var GameState = {
 	preload: function(){
@@ -22,7 +23,13 @@ var GameState = {
 		game.load.image('ground', 'assets/ground.png');
 		game.load.image('shape1', 'assets/block.png');
 		game.load.image('shape2', 'assets/star.png');
+		game.load.image('shape3', 'assets/roundBlock.png');
+		game.load.image('shape4', 'assets/downTri.png');
+		game.load.image('shape5', 'assets/upTri.png');
+		game.load.image('shape6', 'assets/elipse.png');
+		game.load.image('shape7', 'assets/line.png');
 		game.load.audio('nope', 'assets/Nope.mp3');
+		game.load.audio('coin', 'assets/coin.mp3');
 	},
 	create: function(){
 		//Adds arcade physics
@@ -49,7 +56,7 @@ var GameState = {
 
 		//Create Random Player with settings
 		var shape;
-		var num = Math.floor((Math.random() * 2) + 1);
+		var num = Math.floor((Math.random() * 7) + 1);
 		player = game.add.sprite(game.world.centerX, game.world.height - ground.height - 64, 'shape'+num);
 		player.anchor.setTo(0.5,0.5);
 
@@ -82,6 +89,7 @@ var GameState = {
 			player.body.velocity.y = -350;
 			player.body.velocity.x = (Math.random() < 0.5 ? -1 : 1)*200;
 			score++;
+			coin = game.sound.play('coin');
 			scoreText.text = 'Score: ' + score;
 			if(highScore<score){
 				highScore = score;
@@ -91,14 +99,14 @@ var GameState = {
 			timer.stop();
 		}
 		else if (space.downDuration(0.5) && !player.body.touching.down && !hitPlatform){
-			score = 0;
-			scoreText.text = 'Score: ' + score;
+			score = -1;
+			scoreText.text = 'Score: ' + 0;
 			nope = game.sound.play('nope');
 			timer.stop();
 		}
 		else if(player.body.touching.down && hitPlatform){
 			player.body.velocity.x = 0;
-			timer.loop(100, reset, this);
+			timer.loop(80, reset, this);
 			timer.start();
 		}
 		else if(!space.isDown && !player.body.touching.down && !hitPlatform){
@@ -112,8 +120,8 @@ var GameState = {
 }
 
 function reset(){
-		score = 0;
-		scoreText.text = 'Score: ' + score;
+		score = -1;
+		scoreText.text = 'Score: ' + 0;
 		if(!played){
 			nope = game.sound.play('nope');
 			played = true;
