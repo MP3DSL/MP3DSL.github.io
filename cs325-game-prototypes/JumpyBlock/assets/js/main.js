@@ -1,13 +1,19 @@
 var game = new Phaser.Game(1000, 800, Phaser.Auto)
 
+//Scoreboard
 var score = 0;
 var highScore = 0;
 var scoreText;
 var highScoreText;
 
+//Keyboard Input
 var space;
 
+//Timer
 var timer;
+
+//Sound effects/music
+var nope;
 
 var GameState = {
 	preload: function(){
@@ -15,6 +21,7 @@ var GameState = {
 		game.load.image('ground', 'assets/ground.png');
 		game.load.image('shape1', 'assets/block.png');
 		game.load.image('shape2', 'assets/star.png');
+		game.load.audio('nope', 'assets/Nope.mp3');
 	},
 	create: function(){
 		//Adds arcade physics
@@ -79,22 +86,27 @@ var GameState = {
 				highScore = score;
 				highScoreText.text = 'High Score: ' + highScore;
 			}
+			nope.mute = false;
 			timer.stop();
 		}
 		else if (space.downDuration(0.5) && !player.body.touching.down && !hitPlatform){
 			score = 0;
 			scoreText.text = 'Score: ' + score;
+			nope.mute = false;
+			nope = game.sound.play('nope');
 			timer.stop();
 		}
 		else if(player.body.touching.down && hitPlatform){
 			player.body.velocity.x = 0;
-			timer.loop(150, reset, this);
+			timer.loop(100, reset, this);
 			timer.start();
 		}
 		else if(!space.isDown && !player.body.touching.down && !hitPlatform){
 			timer.stop();
+			nope.mute = false;
 		}
 		else if(!space.downDuration(100) && space.isDown && !player.body.touching.down && !hitPlatform){
+			nope.mute = false;
 			reset();
 		}
 	}
@@ -103,6 +115,8 @@ var GameState = {
 function reset(){
 		score = 0;
 		scoreText.text = 'Score: ' + score;
+		nope = game.sound.play('nope');
+		nope.mute = true;
 }
 
 game.state.add('GameState', GameState)
