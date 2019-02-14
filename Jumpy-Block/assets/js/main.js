@@ -106,14 +106,14 @@ var GameState = {
 		}
 		else if(player.body.touching.down && hitPlatform){
 			player.body.velocity.x = 0;
-			timer.loop(80, reset, this);
+			timer.loop(100, reset, this);
 			timer.start();
 		}
 		else if(!space.isDown && !player.body.touching.down && !hitPlatform){
 			played = false;
 			timer.stop();
 		}
-		else if(!space.downDuration(100) && space.isDown && !player.body.touching.down && !hitPlatform){
+		else if(!space.downDuration(175) && space.isDown && !player.body.touching.down && !hitPlatform){
 			reset();
 		}
 	}
