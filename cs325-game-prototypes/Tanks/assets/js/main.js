@@ -333,7 +333,7 @@ function shootP1(){
 	bulletP1.bulletKillType = 1;
 	bulletP1.bulletLifespan = 2200;
 	bulletP1.bulletSpeed = 350;
-	bulletP1.fireRate = 1000;
+	bulletP1.fireRate = 500;
 	bulletP1.fireAngle = p1Gun.angle-90;
 	bulletP1.trackSprite(p1Gun, 0, 0);
 	bulletP1.fire();
@@ -344,7 +344,7 @@ function shootP2(){
 	bulletP2.bulletKillType = 1;
 	bulletP2.bulletLifespan = 2200;
 	bulletP2.bulletSpeed = 350;
-	bulletP2.fireRate = 1000;
+	bulletP2.fireRate = 500;
 	bulletP2.fireAngle = p2Gun.angle-90;
 	bulletP2.trackSprite(p2Gun, 0, 0);
 	bulletP2.fire();
