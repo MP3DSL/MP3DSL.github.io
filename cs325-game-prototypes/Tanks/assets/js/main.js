@@ -281,10 +281,9 @@ var GameState = {
 		var bulletP2HitTopWall = game.physics.arcade.collide(bulletP1.bullets, topWall);
 		var bulletP2HitSideWall = game.physics.arcade.collide(bulletP1.bullets, sideWalls);
 		var bulletP2HitBottomWall = game.physics.arcade.collide(bulletP1.bullets, bottomWall);
-		var bulletHitP1 = game.physics.arcade.collide(bulletP2.bullets, p1);
-		//var bulletP1Overlap = game.physics.arcade.overlap(bulletP1.bullets, p1);
-		var bulletHitP2 = game.physics.arcade.collide(bulletP1.bullets, p2);
-		//var bulletP2Overlap = game.physics.arcade.overlap(bulletP1.bullets, p2);
+		var bulletHitP1 = game.physics.arcade.collide(bulletP2.bullets, p1, function(player, bullet){bullet.kill();});
+		var bulletHitP2 = game.physics.arcade.collide(bulletP1.bullets, p2, function(player, bullet){bullet.kill();});
+		game.physics.arcade.collide(bulletP1.bullets, bulletP2.bullets, function(bullet1, bullet2){bullet1.kill(); bullet2.kill();});
 		
 		if(f.isDown && !winner){
 			tank = 1;
