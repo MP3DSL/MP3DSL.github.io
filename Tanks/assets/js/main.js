@@ -1,7 +1,8 @@
 var game = new Phaser.Game(1000, 500, Phaser.Auto)
 
 //TankShooting
-var bullet;
+var bulletP1;
+var bulletP2;
 var tank;
 
 //Lives
@@ -30,7 +31,7 @@ var GameState = {
 		game.load.image('p2', 'assets/BlueTank(Hull).png');
 		game.load.image('p1Gun', 'assets/RedTank(Gun).png');
 		game.load.image('p2Gun', 'assets/BlueTank(Gun).png');
-		game.load.image('bullet', 'assets/Bullet.png');
+		game.load.image('bullet', 'assets/bullet.png');
 		game.load.image('field', 'assets/Field.png');
 		game.load.image('sideWall', 'assets/SideWall.png');
 		game.load.image('topWall', 'assets/TopWall.png');
@@ -103,8 +104,12 @@ var GameState = {
 		p2.body.immovable = true;
 		
 		//SetUp Bullets
-		bullet = game.add.weapon(30, 'bullet');
-		bullet.onFire.add(function(){
+		bulletP1 = game.add.weapon(30, 'bullet');
+		bulletP1.onFire.add(function(){
+		game.sound.play('tankFiring');
+		});
+		bulletP2 = game.add.weapon(30, 'bullet');
+		bulletP2.onFire.add(function(){
 		game.sound.play('tankFiring');
 		});
 		
@@ -270,67 +275,80 @@ var GameState = {
 		}
 		//\/\/\/GamePlay\/\/\/\\
 		//Bullets
-		var bulletHitTopWall = game.physics.arcade.collide(bullet.bullets, topWall);
-		var bulletHitSideWall = game.physics.arcade.collide(bullet.bullets, sideWalls);
-		var bulletHitBottomWall = game.physics.arcade.collide(bullet.bullets, bottomWall);
-		var bulletHitP1 = game.physics.arcade.collide(bullet.bullets, p1);
-		var bulletP1Overlap = game.physics.arcade.overlap(bullet.bullets, p1);
-		var bulletHitP2 = game.physics.arcade.collide(bullet.bullets, p2);
-		var bulletP2Overlap = game.physics.arcade.overlap(bullet.bullets, p2);
+		var bulletP1HitTopWall = game.physics.arcade.collide(bulletP1.bullets, topWall);
+		var bulletP1HitSideWall = game.physics.arcade.collide(bulletP1.bullets, sideWalls);
+		var bulletP1HitBottomWall = game.physics.arcade.collide(bulletP1.bullets, bottomWall);
+		var bulletP2HitTopWall = game.physics.arcade.collide(bulletP1.bullets, topWall);
+		var bulletP2HitSideWall = game.physics.arcade.collide(bulletP1.bullets, sideWalls);
+		var bulletP2HitBottomWall = game.physics.arcade.collide(bulletP1.bullets, bottomWall);
+		var bulletHitP1 = game.physics.arcade.collide(bulletP2.bullets, p1);
+		//var bulletP1Overlap = game.physics.arcade.overlap(bulletP1.bullets, p1);
+		var bulletHitP2 = game.physics.arcade.collide(bulletP1.bullets, p2);
+		//var bulletP2Overlap = game.physics.arcade.overlap(bulletP1.bullets, p2);
 		
 		if(f.isDown && !winner){
 			tank = 1;
-			shoot();
+			shootP1();
 		}
 		if(h.isDown && !winner){
 			tank = 2;
-			shoot();
+			shootP2();
 		}
-		if(bulletHitP1 && !bulletP1Overlap){
+		if(bulletHitP1){
 			tank = 1;
 			shot();
 		}
-		if(bulletHitP2 && !bulletP2Overlap){
+		if(bulletHitP2){
 			tank = 2;
 			shot();
 		}
 		
 		//Sound
-		if((w.isDown || q.isDown || e.isDown || a.isDown || s.isDown || d.isDown || u.isDown || i.isDown || o.isDown || j.isDown || k.isDown || l.isDown) && !tankMoving.isPlaying){
+		if((w.isDown || q.isDown || e.isDown || a.isDown || s.isDown || d.isDown || u.isDown || i.isDown || o.isDown || j.isDown || k.isDown || l.isDown) && !tankMoving.isPlaying && !winner){
 			tankMoving = game.sound.play('tankMoving');
 		}
 		
 		//Winning
-		if(/*p1Lives>p2Lives || */p2Lives==0 && !winner){
+		if(p2Lives==0 && !winner){
 			winner = true;
 			game.add.text(200, 200, 'PLAYER 1 WINS!!!', { fontSize: '68px', fill: '#ffffff'})
-			bullet.destroy();
+			bulletP1.destroy();
+			bulletP2.destroy();
+			if(tankMoving.isPlaying)
+				tankMoving.stop();
 		}
 		else if(p1Lives==0 && !winner){
 			winner = true;
 			game.add.text(200, 200, 'PLAYER 2 WINS!!!', { fontSize: '68px', fill: '#ffffff'})
-			bullet.destroy();
+			bulletP1.destroy();
+			bulletP2.destroy();
+			if(tankMoving.isPlaying)
+				tankMoving.stop();
 		}
 	}
 }
 
-function shoot(){
-	bullet.bulletCollideWorldBounds = true;
-	bullet.bulletRotateToVelocity = true;
-	bullet.bulletKillType = 1;
-	bullet.bulletLifespan = 2200;
-	bullet.bulletSpeed = 350;
-	bullet.fireRate = 1000;
-	if(tank == 1){
-		bullet.fireAngle = p1Gun.angle-90;
-		bullet.trackSprite(p1Gun, 0, 0);
-		bullet.fire();
-	}
-	if(tank == 2){
-		bullet.fireAngle = p2Gun.angle-90;
-		bullet.trackSprite(p2Gun, 0, 0);
-		bullet.fire();
-	}
+function shootP1(){
+	bulletP1.bulletCollideWorldBounds = true;
+	bulletP1.bulletRotateToVelocity = true;
+	bulletP1.bulletKillType = 1;
+	bulletP1.bulletLifespan = 2200;
+	bulletP1.bulletSpeed = 350;
+	bulletP1.fireRate = 1000;
+	bulletP1.fireAngle = p1Gun.angle-90;
+	bulletP1.trackSprite(p1Gun, 0, 0);
+	bulletP1.fire();
+}
+function shootP2(){
+	bulletP2.bulletCollideWorldBounds = true;
+	bulletP2.bulletRotateToVelocity = true;
+	bulletP2.bulletKillType = 1;
+	bulletP2.bulletLifespan = 2200;
+	bulletP2.bulletSpeed = 350;
+	bulletP2.fireRate = 1000;
+	bulletP2.fireAngle = p2Gun.angle-90;
+	bulletP2.trackSprite(p2Gun, 0, 0);
+	bulletP2.fire();
 }
 function shot(){
 	hit = game.sound.play('hit');
