@@ -326,7 +326,7 @@ function shoot(){
 		bullet.trackSprite(p1Gun, 0, 0);
 		bullet.fire();
 	}
-	else if(tank == 2){
+	if(tank == 2){
 		bullet.fireAngle = p2Gun.angle-90;
 		bullet.trackSprite(p2Gun, 0, 0);
 		bullet.fire();
