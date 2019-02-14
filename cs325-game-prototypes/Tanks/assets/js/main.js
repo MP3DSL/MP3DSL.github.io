@@ -31,7 +31,7 @@ var GameState = {
 		game.load.image('p2', 'assets/BlueTank(Hull).png');
 		game.load.image('p1Gun', 'assets/RedTank(Gun).png');
 		game.load.image('p2Gun', 'assets/BlueTank(Gun).png');
-		game.load.image('bullet', 'assets/bullet.png');
+		game.load.image('bullet', 'assets/Bullet.png');
 		game.load.image('field', 'assets/Field.png');
 		game.load.image('sideWall', 'assets/SideWall.png');
 		game.load.image('topWall', 'assets/TopWall.png');
