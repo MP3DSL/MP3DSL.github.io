@@ -17,9 +17,9 @@ var GameState = {
 		game.load.audio('music', 'assets/backgroundmusic.mp3');
 	},
 	create: function(){
+		this.background = this.game.add.sprite(0,0,'background');
 		bgmusic = game.sound.play('music');
 		game.physics.startSystem(Phaser.Physics.ARCADE);
-		game.stage.backgroundColor = '#42cef4';
 		
 		map = game.add.tilemap('environment');
 		map.addTilesetImage('tileset');

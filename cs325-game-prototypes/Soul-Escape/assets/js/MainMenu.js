@@ -17,16 +17,13 @@ BasicGame.MainMenu.prototype = {
 		this.music.play();
 
 		//this.add.sprite(0, 0, 'titlePage');
-        this.background = this.game.add.sprite(0,0,'heaven');
+        //this.background = this.game.add.sprite(0,0,'heaven');
 		this.playButton = this.add.button( 303, 400, 'playButton', this.startGame, this, 'over', 'out', 'down');
-		this.menuName = this.game.add.text(this.game.world.centerX, 0, 'Path To', { fontSize: '64px', fill: '#ffffff'});
+		this.menuName = this.game.add.text(this.game.world.centerX, 50, 'Soul Escape', { fontSize: '64px', fill: '#ffffff'});
 		this.menuName.anchor.setTo(0.5,0);
 	},
 
 	update: function () {
-        if(gameStarted){
-            gameTimer = Math.floor(this.game.time.totalElapsedSeconds()) - gameTime;
-        }
         if(!this.music.isPlaying){
             this.music.play();
         }

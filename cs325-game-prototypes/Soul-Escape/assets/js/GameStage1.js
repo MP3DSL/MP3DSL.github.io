@@ -31,53 +31,52 @@ BasicGame.GameStage1 = function (game) {
 BasicGame.GameStage1.prototype = {
 
     create: function () {
-    	this.background = this.game.add.sprite(0,0,'heaven');
+    	bgmusic = this.game.sound.play('music');
+		this.game.physics.startSystem(Phaser.Physics.ARCADE);
+		
+		this.background = this.game.add.sprite(0,0,'background');
+		map = this.game.add.tilemap('environment');
+		map.addTilesetImage('tileset');
+		
+		layer = map.createLayer(0);
+		layer.resizeWorld();
+		
+		map.setCollisionBetween(1, 32);
 
-		this.angel = this.game.add.sprite(this.game.world.centerX,this.game.world.centerY+100,'angel');
-		this.angel.anchor.setTo(0.5,0.5);
-		this.angel.scale.setTo(0.2,0.2);
+		player = this.game.add.sprite(this.game.world.centerX, 10050, 'player');
+		player.anchor.setTo(0.5,0.5);
+		player.scale.setTo(0.2,0.2);
+		
+		this.game.physics.arcade.enable(player);
+		player.body.tilePadding.set(1000);
+		player.body.gravity.y = 1;
+		player.body.collideWorldBounds=true;
+		
+		this.game.camera.follow(player);
 
-		this.left = this.game.add.button(150,this.game.world.centerY,'left');
-		this.left.anchor.setTo(0.5,0.5);
-		this.left.inputEnabled = true;
-		this.left.events.onInputDown.add(function() {this.leftPathCheck();}, this);
-
-		this.right = this.game.add.sprite(630,this.game.world.centerY,'right');
-		this.right.anchor.setTo(0.5,0.5);
-		this.right.inputEnabled = true;
-		this.right.events.onInputDown.add(function() {this.rightPathCheck();}, this);
-
-		gameTimerText = this.game.add.text(0,0,'Time: 0', {fontSize: '24px', fill: '#00000'})
-		if(!gameStarted){
-			gameTime = Math.floor(this.game.time.totalElapsedSeconds());
-    	}
-    	gameStarted = true;
+		//\/\/\/Adding Keybindings\/\/\/\\
+		w = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
+		this.game.input.keyboard.addKeyCapture([Phaser.Keyboard.W]);
+		a = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
+		this.game.input.keyboard.addKeyCapture([Phaser.Keyboard.A]);
+		s = this.game.input.keyboard.addKey(Phaser.Keyboard.S);
+		this.game.input.keyboard.addKeyCapture([Phaser.Keyboard.S]);
+		d = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
+		this.game.input.keyboard.addKeyCapture([Phaser.Keyboard.D]);
+		space = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+		this.game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
+		this.game.input.mouse.capture = true;
     },
 
     update: function () {
-		gameTimerText.text = 'Time: ' + gameTimer;
-		gameTimer = Math.floor(this.game.time.totalElapsedSeconds()) - gameTime;
-    },
-
-	leftPathCheck: function () {
-		if(stage1 == 0){
-			this.state.start('Stage2');
-			this.game.sound.play('correct');
-		}
-		else{
-			this.state.start('MainMenu');
-			this.game.sound.play('nope');
-		}
-	},
-
-	rightPathCheck: function () {
-		if(stage1 == 0){
-			this.state.start('MainMenu');
-			this.game.sound.play('nope');
-		}
-		else{
-			this.state.start('Stage2');
-			this.game.sound.play('correct');
-		}
-	}
+    	if(a.isDown){
+    		player.body.position.x -= 30;
+    	}
+    	if(d.isDown){
+    		player.body.position.x += 30;
+    	}
+		if(!bgmusic.isPlaying){
+            bgmusic.play();
+        }
+    }
 };
