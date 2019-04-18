@@ -14,6 +14,7 @@ BasicGame.MainMenu.prototype = {
 		//	Naturally I expect you to do something significantly better :)
 
 		this.music = new Phaser.Sound(this, 'menu', 1, true);
+		this.music.volume = musicVolume;
 		this.music.play();
 
 		//this.add.sprite(0, 0, 'titlePage');

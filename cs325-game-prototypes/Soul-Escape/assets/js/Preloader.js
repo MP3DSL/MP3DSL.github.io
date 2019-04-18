@@ -1,5 +1,6 @@
-BasicGame.Preloader = function (game) {
+var musicVolume = 0.7;
 
+BasicGame.Preloader = function (game) {
 	this.background = null;
 	this.preloadBar = null;
 };

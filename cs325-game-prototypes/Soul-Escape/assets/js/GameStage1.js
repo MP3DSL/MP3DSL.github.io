@@ -31,11 +31,13 @@ BasicGame.GameStage1 = function (game) {
 var flipped = true;
 var demons;
 var demonsSpawned = 0;
+var spawnTimer;
 
 BasicGame.GameStage1.prototype = {
 
     create: function () {
     	bgmusic = this.game.sound.play('music');
+    	bgmusic.volume = musicVolume;
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
 		
 		this.background = this.game.add.sprite(0,0,'background');
@@ -45,21 +47,22 @@ BasicGame.GameStage1.prototype = {
 		layer = map.createLayer(0);
 		layer.resizeWorld();
 		
-		map.setCollisionBetween(1, 32);
+		map.setCollisionBetween(2, 32);
 
 		spawnpoint = this.game.add.sprite(200, 3850, 'spawnPoint');
 		demons = this.game.add.group();
 		demons.enableBody=true;
 		spawnTimer = this.game.time.create(false);
 		spawnTimer.loop(3000, spawn, this);
+		spawnTimer.start();
 
-		player = this.game.add.sprite(this.game.world.centerX, 4000, 'player');
+		player = this.game.add.sprite(this.game.world.centerX, 3800, 'player');
 		player.anchor.setTo(0.5,0.5);
 		player.scale.setTo(0.2,0.2);
 		
 		this.game.physics.arcade.enable(player);
 		player.body.tilePadding.set(1000);
-		player.body.gravity.y = 1;
+		player.body.gravity.y = 900;
 		player.body.collideWorldBounds=true;
 		
 		this.game.camera.follow(player);
@@ -79,6 +82,8 @@ BasicGame.GameStage1.prototype = {
     },
 
     update: function () {
+    	player.body.velocity.x = 0;
+    	var colliding = this.game.physics.arcade.collide(player,layer);
     	demons.forEach(function move(demon){
     		this.game.physics.arcade.moveToObject(demon, player, 140);
 			if(demon.body.position.x < player.body.position.x && demon.scale.x > 0){
@@ -87,17 +92,20 @@ BasicGame.GameStage1.prototype = {
 			else if(demon.body.position.x > player.body.position.x && demon.scale.x < 0){
 				demon.scale.x *= -1;
 			}
+			if(this.game.physics.arcade.collide(demons, player) || this.game.physics.arcade.collide(player, demons)){
+				killDemon(player, demon);
+				demonsSpawned--;
+			}
     	}, this.game.physics.arcade, false, 200);
-    	if(demonsSpawned < 3)
-    		spawnTimer.start();
-    	else
-    		spawnTimer.stop();
     	if(a.isDown){
     		if(flipped){
     			player.scale.x *= -1;
     			flipped = false;
     		}
     		player.body.position.x -= 20;
+    	}
+    	if(s.isDown){
+    		player.body.velocity.y = 900;
     	}
     	if(d.isDown){
     		if(!flipped){
@@ -106,6 +114,9 @@ BasicGame.GameStage1.prototype = {
     		}
     		player.body.position.x += 20;
     	}
+    	if(space.isDown && colliding){
+    		player.body.velocity.y = -1000;
+    	}
 		if(!bgmusic.isPlaying){
             bgmusic.play();
         }
@@ -113,9 +124,20 @@ BasicGame.GameStage1.prototype = {
 };
 
 function spawn(){
-	demon = demons.create(spawnpoint.x, spawnpoint.y, 'demon');
-	demon.anchor.setTo(0.5,0.5);
-    demon.scale.setTo(0.2,0.2);
-    demon.scale.x *= -1;
-    demonsSpawned++;
+	if(demonsSpawned<3){
+		demon = demons.create(spawnpoint.x, spawnpoint.y, 'demon');
+		demon.anchor.setTo(0.5,0.5);
+    	demon.scale.setTo(0.2,0.2);
+    	demon.scale.x *= -1;
+    	demonsSpawned++;
+	}
+}
+
+function killDemon(player, demon) {
+	//demon.animations.play('die');
+	//demon.events.onAnimationComplete(function(enemy) {
+		demon.kill();
+		demon.destroy();
+		demons.remove(demon);
+	//}, this);
 }
