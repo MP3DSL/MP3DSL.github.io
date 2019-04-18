@@ -23,7 +23,9 @@ BasicGame.Preloader.prototype = {
 		this.game.load.tilemap('environment', 'assets/environment.csv', null, Phaser.Tilemap.TILED_CSV);
 		this.game.load.image('tileset', 'assets/TempTileSet.png');
 		this.game.load.image('background', 'assets/background.png');
-		this.game.load.image('player', 'assets/DemonStandby.png');
+		this.game.load.image('player', 'assets/HeroStandby.png');
+		this.game.load.image('demon', 'assets/DemonStandby.png');
+		this.game.load.image('spawnPoint', 'assets/SpawnPoint.png');
 		this.load.atlas('playButton', 'assets/play_button.png', 'assets/play_button.json');
         this.load.audio('menu', 'assets/Hyouhaku.mp3');
         this.load.audio('music', 'assets/Kokuten.mp3')

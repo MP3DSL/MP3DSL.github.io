@@ -28,6 +28,10 @@ BasicGame.GameStage1 = function (game) {
 
 };
 
+var flipped = true;
+var demons;
+var demonsSpawned = 0;
+
 BasicGame.GameStage1.prototype = {
 
     create: function () {
@@ -43,7 +47,13 @@ BasicGame.GameStage1.prototype = {
 		
 		map.setCollisionBetween(1, 32);
 
-		player = this.game.add.sprite(this.game.world.centerX, 10050, 'player');
+		spawnpoint = this.game.add.sprite(200, 3850, 'spawnPoint');
+		demons = this.game.add.group();
+		demons.enableBody=true;
+		spawnTimer = this.game.time.create(false);
+		spawnTimer.loop(3000, spawn, this);
+
+		player = this.game.add.sprite(this.game.world.centerX, 4000, 'player');
 		player.anchor.setTo(0.5,0.5);
 		player.scale.setTo(0.2,0.2);
 		
@@ -69,14 +79,43 @@ BasicGame.GameStage1.prototype = {
     },
 
     update: function () {
+    	demons.forEach(function move(demon){
+    		this.game.physics.arcade.moveToObject(demon, player, 140);
+			if(demon.body.position.x < player.body.position.x && demon.scale.x > 0){
+				demon.scale.x *= -1;
+			}
+			else if(demon.body.position.x > player.body.position.x && demon.scale.x < 0){
+				demon.scale.x *= -1;
+			}
+    	}, this.game.physics.arcade, false, 200);
+    	if(demonsSpawned < 3)
+    		spawnTimer.start();
+    	else
+    		spawnTimer.stop();
     	if(a.isDown){
-    		player.body.position.x -= 30;
+    		if(flipped){
+    			player.scale.x *= -1;
+    			flipped = false;
+    		}
+    		player.body.position.x -= 20;
     	}
     	if(d.isDown){
-    		player.body.position.x += 30;
+    		if(!flipped){
+    			player.scale.x *= -1;
+    			flipped = true;
+    		}
+    		player.body.position.x += 20;
     	}
 		if(!bgmusic.isPlaying){
             bgmusic.play();
         }
     }
 };
+
+function spawn(){
+	demon = demons.create(spawnpoint.x, spawnpoint.y, 'demon');
+	demon.anchor.setTo(0.5,0.5);
+    demon.scale.setTo(0.2,0.2);
+    demon.scale.x *= -1;
+    demonsSpawned++;
+}

@@ -15,6 +15,9 @@ BasicGame.Boot.prototype = {
         if (this.game.device.desktop)
         {
             //  If you have any desktop specific settings, they can go in here
+            this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+            this.scale.setMinMax(640, 360, 2560, 1440);
+            this.scale.forceLandscape = true;
             this.scale.pageAlignHorizontally = true;
         }
         else
@@ -22,10 +25,9 @@ BasicGame.Boot.prototype = {
             //  Same goes for mobile settings.
             //  In this case we're saying "scale the game, no lower than 480x260 and no higher than 1024x768"
             this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-            this.scale.setMinMax(1000, 500, 2000, 1000);
+            this.scale.setMinMax(500, 300, 1000, 600);
             this.scale.forceLandscape = true;
             this.scale.pageAlignHorizontally = true;
-            this.scale.supportsFullscreen = true;
         }
 
     },
