@@ -31,9 +31,9 @@ BasicGame.GameStage1 = function (game) {
 var flipped = true;
 var demons;
 var demonsSpawned = 0;
+var maximumDemons = 9;
 var spawnTimer;
 var spawnpoint = [];
-var walk;
 var isWalking = false;
 var overlay;
 
@@ -56,13 +56,16 @@ BasicGame.GameStage1.prototype = {
 		
 		map.setCollisionBetween(2, 32);
 
-		spawnpoint.push(this.game.add.sprite(200, 3850, 'spawnPoint'));
-		spawnpoint.push(this.game.add.sprite(1500, 3850, 'spawnPoint'));
-		spawnpoint.push(this.game.add.sprite(3000, 3850, 'spawnPoint'));
+		spawnpoint.push(this.game.add.sprite(200, 1000, 'spawnPoint'));
+		spawnpoint.push(this.game.add.sprite(1300, 1000, 'spawnPoint'));
+		spawnpoint.push(this.game.add.sprite(2600, 1000, 'spawnPoint'));
+		spawnpoint[0].alpha = 0;
+		spawnpoint[1].alpha = 0;
+		spawnpoint[2].alpha = 0;
 		demons = this.game.add.group();
 		demons.enableBody=true;
 		spawnTimer = this.game.time.create(false);
-		spawnTimer.loop(3000, spawn, this);
+		spawnTimer.loop(1500, spawn, this);
 		spawnTimer.start();
 
 		player = this.game.add.sprite(this.game.world.centerX, 3800, 'hero');
@@ -98,14 +101,15 @@ BasicGame.GameStage1.prototype = {
     	player.body.velocity.x = 0;
     	var colliding = this.game.physics.arcade.collide(player,layer);
     	demons.forEach(function move(demon){
-    		this.game.physics.arcade.moveToObject(demon, player, 140);
+    		this.game.physics.arcade.moveToObject(demon, player, 100);
+    		demon.animations.play('demonWalk', 8, true);
 			if(demon.body.position.x < player.body.position.x && demon.scale.x > 0){
 				demon.scale.x *= -1;
 			}
 			else if(demon.body.position.x > player.body.position.x && demon.scale.x < 0){
 				demon.scale.x *= -1;
 			}
-			if(this.game.physics.arcade.collide(demons, player) || this.game.physics.arcade.collide(player, demons)){
+			if(this.game.physics.arcade.collide(demon, player) || this.game.physics.arcade.collide(player, demon)){
 				killDemon(player, demon);
 				demonsSpawned--;
 			}
@@ -149,10 +153,12 @@ BasicGame.GameStage1.prototype = {
 };
 
 function spawn(){
-	if(demonsSpawned<3){
-		demon = demons.create(spawnpoint.x, spawnpoint.y, 'demon');
+	if(demonsSpawned<maximumDemons){
+		var spawnNumber = Math.floor((Math.random() * 3) + 0);
+		demon = demons.create(spawnpoint[spawnNumber].x, spawnpoint[spawnNumber].y, 'demon');
+		demonWalk = demon.animations.add('demonWalk');
 		demon.anchor.setTo(0.5,0.5);
-    	demon.scale.setTo(0.2,0.2);
+    	demon.scale.setTo(0.3,0.3);
     	demon.scale.x *= -1;
     	demonsSpawned++;
 	}

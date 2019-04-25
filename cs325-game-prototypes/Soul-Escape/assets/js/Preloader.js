@@ -27,7 +27,8 @@ BasicGame.Preloader.prototype = {
 		this.game.load.image('overlay', 'assets/overlay.png');
 		this.game.load.image('player', 'assets/HeroStandby.png');
 		this.game.load.spritesheet('hero', 'assets/HeroWalk/HeroWalkSpriteSheet.png', 450, 976, 7);
-		this.game.load.image('demon', 'assets/DemonStandby.png');
+		//this.game.load.image('demon', 'assets/DemonStandby.png');
+		this.game.load.spritesheet('demon', 'assets/DemonWalk/DemonWalkSpriteSheet.png', 570, 902, 4);
 		this.game.load.image('spawnPoint', 'assets/SpawnPoint.png');
 		this.load.atlas('playButton', 'assets/play_button.png', 'assets/play_button.json');
         this.load.audio('menu', 'assets/Hyouhaku.mp3');
