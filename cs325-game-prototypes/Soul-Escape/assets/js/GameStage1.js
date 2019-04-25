@@ -32,6 +32,10 @@ var flipped = true;
 var demons;
 var demonsSpawned = 0;
 var spawnTimer;
+var spawnpoint = [];
+var walk;
+var isWalking = false;
+var overlay;
 
 BasicGame.GameStage1.prototype = {
 
@@ -40,25 +44,31 @@ BasicGame.GameStage1.prototype = {
     	bgmusic.volume = musicVolume;
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
 		
-		this.background = this.game.add.sprite(0,0,'background');
+		this.background = this.game.add.image(0,0,'background');
+		//this.background.anchor.setTo(0.5,0.5);
+		this.background.scale.setTo(0.3,0.3);
 		map = this.game.add.tilemap('environment');
 		map.addTilesetImage('tileset');
 		
-		layer = map.createLayer(0);
+		layer = map.createLayer(0, 400, 200);
+		layer.scale.set(0.3);
 		layer.resizeWorld();
 		
 		map.setCollisionBetween(2, 32);
 
-		spawnpoint = this.game.add.sprite(200, 3850, 'spawnPoint');
+		spawnpoint.push(this.game.add.sprite(200, 3850, 'spawnPoint'));
+		spawnpoint.push(this.game.add.sprite(1500, 3850, 'spawnPoint'));
+		spawnpoint.push(this.game.add.sprite(3000, 3850, 'spawnPoint'));
 		demons = this.game.add.group();
 		demons.enableBody=true;
 		spawnTimer = this.game.time.create(false);
 		spawnTimer.loop(3000, spawn, this);
 		spawnTimer.start();
 
-		player = this.game.add.sprite(this.game.world.centerX, 3800, 'player');
+		player = this.game.add.sprite(this.game.world.centerX, 3800, 'hero');
+		walk = player.animations.add('walk');
 		player.anchor.setTo(0.5,0.5);
-		player.scale.setTo(0.2,0.2);
+		player.scale.setTo(0.3,0.3);
 		
 		this.game.physics.arcade.enable(player);
 		player.body.tilePadding.set(1000);
@@ -66,6 +76,9 @@ BasicGame.GameStage1.prototype = {
 		player.body.collideWorldBounds=true;
 		
 		this.game.camera.follow(player);
+
+		overlay = this.game.add.image(0,0,'overlay');
+		overlay.scale.setTo(0.3,0.3);
 
 		//\/\/\/Adding Keybindings\/\/\/\\
 		w = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
@@ -98,6 +111,10 @@ BasicGame.GameStage1.prototype = {
 			}
     	}, this.game.physics.arcade, false, 200);
     	if(a.isDown){
+    		if(!isWalking){
+    			player.animations.play('walk', 30, true);
+    			isWalking = true;
+    		}
     		if(flipped){
     			player.scale.x *= -1;
     			flipped = false;
@@ -108,11 +125,19 @@ BasicGame.GameStage1.prototype = {
     		player.body.velocity.y = 900;
     	}
     	if(d.isDown){
+    		if(!isWalking){
+    			player.animations.play('walk', 30, true);
+    			isWalking = true;
+    		}
     		if(!flipped){
     			player.scale.x *= -1;
     			flipped = true;
     		}
     		player.body.position.x += 20;
+    	}
+    	if (!a.isDown && !d.isDown){
+    		player.animations.stop();
+    		isWalking = false;
     	}
     	if(space.isDown && colliding){
     		player.body.velocity.y = -1000;

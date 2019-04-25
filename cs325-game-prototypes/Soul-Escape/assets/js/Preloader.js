@@ -1,4 +1,4 @@
-var musicVolume = 0.7;
+var musicVolume = 0.3;
 
 BasicGame.Preloader = function (game) {
 	this.background = null;
@@ -23,8 +23,10 @@ BasicGame.Preloader.prototype = {
 		//	As this is just a Project Template I've not provided these assets, swap them for your own.
 		this.game.load.tilemap('environment', 'assets/environment.csv', null, Phaser.Tilemap.TILED_CSV);
 		this.game.load.image('tileset', 'assets/TempTileSet.png');
-		this.game.load.image('background', 'assets/background.png');
+		this.game.load.image('background', 'assets/hell.png');
+		this.game.load.image('overlay', 'assets/overlay.png');
 		this.game.load.image('player', 'assets/HeroStandby.png');
+		this.game.load.spritesheet('hero', 'assets/HeroWalk/HeroWalkSpriteSheet.png', 450, 976, 7);
 		this.game.load.image('demon', 'assets/DemonStandby.png');
 		this.game.load.image('spawnPoint', 'assets/SpawnPoint.png');
 		this.load.atlas('playButton', 'assets/play_button.png', 'assets/play_button.json');
